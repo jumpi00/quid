@@ -1,6 +1,6 @@
-import { SUPABASE_URL, SUPABASE_KEY } from './config.js?v=202611252120'
-import { createApi } from './api.js?v=202611252120'
-import { createDemoApi } from './demo.js?v=202611252120'
+import { SUPABASE_URL, SUPABASE_KEY } from './config.js?v=202611252123'
+import { createApi } from './api.js?v=202611252123'
+import { createDemoApi } from './demo.js?v=202611252123'
 
 const GUIDE_URL = 'https://github.com/jumpi00/quid/blob/main/docs/comando-rapido.md'
 const $app = document.getElementById('app')
@@ -77,7 +77,7 @@ async function boot () {
     return main()
   }
   if (!SUPABASE_URL || !SUPABASE_KEY) {
-    $app.innerHTML = `<h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252120" alt="">Quid</h1><p class="muted">Configurazione mancante: aggiungi URL e chiave di Supabase in config.js.</p>
+    $app.innerHTML = `<h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252123" alt="">Quid</h1><p class="muted">Configurazione mancante: aggiungi URL e chiave di Supabase in config.js.</p>
       <p><a href="?demo">Apri la demo</a></p>`
     return
   }
@@ -101,7 +101,7 @@ async function authGate () {
 
 function renderLogin (msg = '') {
   $app.innerHTML = `
-    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252120" alt="">Quid</h1>
+    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252123" alt="">Quid</h1>
     <form id="login">
       <label for="email">Email</label>
       <input id="email" name="email" type="email" autocomplete="email" required>
@@ -147,7 +147,7 @@ async function renderMfaEnroll () {
   const { data, error } = await sb.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Quid ' + new Date().toISOString().slice(0, 10) })
   if (error) return renderLogin(error.message)
   $app.innerHTML = `
-    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252120" alt="">Quid</h1>
+    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252123" alt="">Quid</h1>
     <h2>Attiva la verifica in due passaggi</h2>
     <p class="muted">Obbligatoria. Inquadra il codice con un'app di autenticazione (Password di iPhone, Google Authenticator, 1Password…) oppure copia la chiave.</p>
     <img class="qr" alt="Codice QR per l'app di autenticazione">
@@ -174,7 +174,7 @@ async function renderMfaVerify () {
   const factor = data?.totp?.find(f => f.status === 'verified')
   if (!factor) return renderMfaEnroll()
   $app.innerHTML = `
-    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252120" alt="">Quid</h1>
+    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252123" alt="">Quid</h1>
     <form id="mfa">
       <label for="totp">Codice dell'app di autenticazione</label>
       <input id="totp" name="totp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" required autofocus>
@@ -214,7 +214,7 @@ async function render () {
   const n = state.inbox.length
   $app.innerHTML = `
     ${api.demo ? '<div class="demo">Modalità demo: dati finti, nulla viene salvato.</div>' : ''}
-    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252120" alt="">Quid</h1>
+    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252123" alt="">Quid</h1>
     <nav>${TABS.map(([k, l]) => `<button data-nav="${k}" ${state.view === k ? 'aria-current="page"' : ''}>${l}${k === 'inbox' && n ? ` ${n}` : ''}</button>`).join('')}</nav>
     <div id="view"></div>
     <button class="add" data-act="add">Aggiungi spesa</button>`
@@ -392,7 +392,7 @@ function openTx (t, mode) {
     <label for="merchant">Descrizione</label>
     <input id="merchant" name="merchant" maxlength="120" autocomplete="off" value="${esc(t?.merchant)}">
     <label for="date">Data</label>
-    <input id="date" name="date" type="date" required value="${esc(t?.occurred_on || todayIso())}">
+    <div class="date-wrap"><input id="date" name="date" type="date" required value="${esc(t?.occurred_on || todayIso())}"></div>
     <label for="note">Nota</label>
     <textarea id="note" name="note" maxlength="500">${esc(t?.note)}</textarea>
     ${mode === 'edit' && t.merchant ? `<label class="check"><input type="checkbox" name="remember" ${t.needs_review ? 'checked' : ''}>Se cambi categoria, usala sempre per “${esc(t.merchant)}”</label>` : ''}
@@ -444,7 +444,7 @@ function openRec (r) {
       ${Object.entries(FREQ).map(([k, l]) => `<option value="${k}" ${(r?.frequency || 'monthly') === k ? 'selected' : ''}>${l}</option>`).join('')}
     </select>
     <label for="date">Prossima scadenza</label>
-    <input id="date" name="date" type="date" required value="${esc(next)}">
+    <div class="date-wrap"><input id="date" name="date" type="date" required value="${esc(next)}"></div>
     <label>Alla scadenza</label>
     <label class="check"><input type="radio" name="mode" value="confirm" ${r?.mode !== 'auto' ? 'checked' : ''}>Chiedimi di confermare</label>
     <label class="check"><input type="radio" name="mode" value="auto" ${r?.mode === 'auto' ? 'checked' : ''}>Registrala da sola</label>
