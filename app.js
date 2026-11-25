@@ -1,11 +1,27 @@
-import { SUPABASE_URL, SUPABASE_KEY } from './config.js?v=202611252123'
-import { createApi } from './api.js?v=202611252123'
-import { createDemoApi } from './demo.js?v=202611252123'
+import { SUPABASE_URL, SUPABASE_KEY } from './config.js?v=202611252126'
+import { createApi } from './api.js?v=202611252126'
+import { createDemoApi } from './demo.js?v=202611252126'
 
 const GUIDE_URL = 'https://github.com/jumpi00/quid/blob/main/docs/comando-rapido.md'
 const $app = document.getElementById('app')
 const $sheet = document.getElementById('sheet')
 const isDemo = new URLSearchParams(location.search).has('demo')
+// versione = il ?v= con cui è stato caricato questo file (lo aggiorna tools/bump.sh)
+const VERSION = new URL(import.meta.url).searchParams.get('v') || 'dev'
+
+// GitHub Pages fa tenere la pagina in cache 10 minuti: se online c'è una versione più nuova, ricarica
+async function checkUpdate () {
+  try {
+    const html = await (await fetch('./?check=' + Date.now(), { cache: 'no-store' })).text()
+    const live = html.match(/app\.js\?v=(\d+)/)?.[1]
+    if (!live || live === VERSION || VERSION === 'dev') return
+    const key = 'quid-reload-' + live
+    try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, '1') } catch {}
+    const url = new URL(location.href)
+    url.searchParams.set('u', live)
+    location.replace(url)
+  } catch {}
+}
 
 let sb = null
 let api = null
@@ -77,7 +93,7 @@ async function boot () {
     return main()
   }
   if (!SUPABASE_URL || !SUPABASE_KEY) {
-    $app.innerHTML = `<h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252123" alt="">Quid</h1><p class="muted">Configurazione mancante: aggiungi URL e chiave di Supabase in config.js.</p>
+    $app.innerHTML = `<h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252126" alt="">Quid</h1><p class="muted">Configurazione mancante: aggiungi URL e chiave di Supabase in config.js.</p>
       <p><a href="?demo">Apri la demo</a></p>`
     return
   }
@@ -101,7 +117,7 @@ async function authGate () {
 
 function renderLogin (msg = '') {
   $app.innerHTML = `
-    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252123" alt="">Quid</h1>
+    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252126" alt="">Quid</h1>
     <form id="login">
       <label for="email">Email</label>
       <input id="email" name="email" type="email" autocomplete="email" required>
@@ -147,7 +163,7 @@ async function renderMfaEnroll () {
   const { data, error } = await sb.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Quid ' + new Date().toISOString().slice(0, 10) })
   if (error) return renderLogin(error.message)
   $app.innerHTML = `
-    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252123" alt="">Quid</h1>
+    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252126" alt="">Quid</h1>
     <h2>Attiva la verifica in due passaggi</h2>
     <p class="muted">Obbligatoria. Inquadra il codice con un'app di autenticazione (Password di iPhone, Google Authenticator, 1Password…) oppure copia la chiave.</p>
     <img class="qr" alt="Codice QR per l'app di autenticazione">
@@ -174,7 +190,7 @@ async function renderMfaVerify () {
   const factor = data?.totp?.find(f => f.status === 'verified')
   if (!factor) return renderMfaEnroll()
   $app.innerHTML = `
-    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252123" alt="">Quid</h1>
+    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252126" alt="">Quid</h1>
     <form id="mfa">
       <label for="totp">Codice dell'app di autenticazione</label>
       <input id="totp" name="totp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" required autofocus>
@@ -214,7 +230,7 @@ async function render () {
   const n = state.inbox.length
   $app.innerHTML = `
     ${api.demo ? '<div class="demo">Modalità demo: dati finti, nulla viene salvato.</div>' : ''}
-    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252123" alt="">Quid</h1>
+    <h1 class="brand"><img class="logo" src="icons/logo.svg?v=202611252126" alt="">Quid</h1>
     <nav>${TABS.map(([k, l]) => `<button data-nav="${k}" ${state.view === k ? 'aria-current="page"' : ''}>${l}${k === 'inbox' && n ? ` ${n}` : ''}</button>`).join('')}</nav>
     <div id="view"></div>
     <button class="add" data-act="add">Aggiungi spesa</button>`
@@ -339,7 +355,8 @@ const VIEWS = {
 
       <h3>Account</h3>
       <p class="muted">${esc(state.email)}</p>
-      ${api.demo ? '' : '<div class="actions"><button data-act="logout">Esci</button></div>'}`
+      ${api.demo ? '' : '<div class="actions"><button data-act="logout">Esci</button></div>'}
+      <p class="muted version">Versione ${esc(VERSION)}</p>`
   }
 }
 
@@ -597,7 +614,10 @@ $app.addEventListener('click', (e) => {
 
 // quando torni sull'app (es. dopo un pagamento) aggiorna i dati
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && api && state.cats.length && !$sheet.open) refresh()
+  if (document.visibilityState !== 'visible') return
+  checkUpdate()
+  if (api && state.cats.length && !$sheet.open) refresh()
 })
+checkUpdate()
 
 boot()
