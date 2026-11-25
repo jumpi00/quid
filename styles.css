@@ -6,9 +6,6 @@
   --soft: #e6e6e6;
   color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #000; --fg: #fff; --muted: #9a9a9a; --line: #fff; --soft: #2a2a2a; color-scheme: dark; }
-}
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -61,8 +58,8 @@ label.check { display: flex; align-items: center; font-size: 15px; margin: 12px 
 /* barra superiore */
 .top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
 .demo { border: 1px solid var(--line); padding: 8px 10px; font-size: 13px; margin-bottom: 12px; }
-nav { display: grid; grid-template-columns: auto 1fr auto auto; border: 1px solid var(--line); margin-bottom: 20px; }
-nav button { border: 0; border-right: 1px solid var(--line); font-size: 13px; padding: 8px 6px; white-space: nowrap; }
+nav { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); margin-bottom: 20px; }
+nav button { min-width: 0; border: 0; border-right: 1px solid var(--line); font-size: 12px; padding: 8px 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 nav button:last-child { border-right: 0; }
 nav button[aria-current="page"] { background: var(--fg); color: var(--bg); }
 

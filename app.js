@@ -1,6 +1,6 @@
-import { SUPABASE_URL, SUPABASE_KEY } from './config.js?v=202611251923'
-import { createApi } from './api.js?v=202611251923'
-import { createDemoApi } from './demo.js?v=202611251923'
+import { SUPABASE_URL, SUPABASE_KEY } from './config.js?v=202611251926'
+import { createApi } from './api.js?v=202611251926'
+import { createDemoApi } from './demo.js?v=202611251926'
 
 const GUIDE_URL = 'https://github.com/jumpi00/quid/blob/main/docs/comando-rapido.md'
 const $app = document.getElementById('app')
@@ -215,7 +215,7 @@ async function render () {
   $app.innerHTML = `
     ${api.demo ? '<div class="demo">Modalità demo: dati finti, nulla viene salvato.</div>' : ''}
     <div class="top"><h1>Quid</h1></div>
-    <nav>${TABS.map(([k, l]) => `<button data-nav="${k}" ${state.view === k ? 'aria-current="page"' : ''}>${l}${k === 'inbox' && n ? ` (${n})` : ''}</button>`).join('')}</nav>
+    <nav>${TABS.map(([k, l]) => `<button data-nav="${k}" ${state.view === k ? 'aria-current="page"' : ''}>${l}${k === 'inbox' && n ? ` ${n}` : ''}</button>`).join('')}</nav>
     <div id="view"></div>
     <button class="add" data-act="add">Aggiungi spesa</button>`
   const v = $app.querySelector('#view')
