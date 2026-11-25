@@ -55,8 +55,14 @@ label { display: block; font-size: 13px; margin: 14px 0 6px; }
 label.check { display: flex; align-items: center; font-size: 15px; margin: 12px 0; }
 .big { font-size: 28px; font-weight: 600; }
 
-/* barra superiore */
-.top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+/* logo e icone (segnaposto: quadrati neri, da sostituire in icons/) */
+.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.logo { width: 28px; height: 28px; display: block; }
+.ico { flex: none; display: inline-block; width: 28px; height: 28px; background: var(--fg); }
+.with-ico { display: flex; align-items: center; gap: 10px; }
+.with-ico .ico { width: 20px; height: 20px; }
+.tx .grow { flex: 1; min-width: 0; }
+.tx:has(.ico) { align-items: center; }
 .demo { border: 1px solid var(--line); padding: 8px 10px; font-size: 13px; margin-bottom: 12px; }
 nav { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); margin-bottom: 20px; }
 nav button { min-width: 0; border: 0; border-right: 1px solid var(--line); font-size: 12px; padding: 8px 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
