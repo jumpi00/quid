@@ -1,6 +1,6 @@
-import { SUPABASE_URL, SUPABASE_KEY } from './config.js?v=202611251931'
-import { createApi } from './api.js?v=202611251931'
-import { createDemoApi } from './demo.js?v=202611251931'
+import { SUPABASE_URL, SUPABASE_KEY } from './config.js?v=202611252002'
+import { createApi } from './api.js?v=202611252002'
+import { createDemoApi } from './demo.js?v=202611252002'
 
 const GUIDE_URL = 'https://github.com/jumpi00/quid/blob/main/docs/comando-rapido.md'
 const $app = document.getElementById('app')
